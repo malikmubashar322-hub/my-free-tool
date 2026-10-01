@@ -8,6 +8,7 @@
         body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; }
         h2 { color: #007bff; margin-bottom: 20px; }
+        p { color: #555; font-size: 15px; }
         input[type="date"] { width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
         button { background-color: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; }
         button:hover { background-color: #0056b3; }
@@ -19,9 +20,9 @@
 
 <div class="container">
     <h2>🗓️ Age Calculator</h2>
-    <p>Apni tareekh-e-paisaish (DOB) select karein:</p>
+    <p>Select your Date of Birth (DOB):</p>
     <input type="date" id="dob">
-    <button onclick="calculateAge()">Age Calculate Karein</button>
+    <button onclick="calculateAge()">Calculate Age</button>
     <div id="result" class="result"></div>
     <br>
     <a href="index.html" class="back-btn">⬅️ Back to Main Menu</a>
@@ -31,7 +32,7 @@
 function calculateAge() {
     let dobInput = document.getElementById('dob').value;
     if(!dobInput) {
-        document.getElementById('result').innerText = "Plz date select karein!";
+        document.getElementById('result').innerText = "Please select a valid date!";
         return;
     }
     let dob = new Date(dobInput);
@@ -39,7 +40,7 @@ function calculateAge() {
     let ageDate = new Date(diff); 
     let years = Math.abs(ageDate.getUTCFullYear() - 1970);
     
-    document.getElementById('result').innerText = "Aap ki umar " + years + " saal hai! 🎉";
+    document.getElementById('result').innerText = "Your age is " + years + " years old! 🎉";
 }
 </script>
 

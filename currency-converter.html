@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💵 Free USD to PKR Currency Converter</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; }
+        h2 { color: #28a745; margin-bottom: 20px; }
+        input[type="number"] { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        .result { margin-top: 20px; font-size: 22px; font-weight: bold; color: #28a745; }
+        .back-btn { margin-top: 25px; display: inline-block; color: #007bff; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>💵 USD to PKR Converter</h2>
+    <p>US Dollar (USD) ki miqdar likhein:</p>
+    <input type="number" id="usdInput" placeholder="Amount in USD" oninput="convertCurrency()" min="0">
+    <p style="font-size: 13px; color: #666;">(Live Market Rate: $1 = 278 PKR)</p>
+    
+    <div id="currencyResult" class="result">Rs. 0.00 PKR 🇵🇰</div>
+    <br>
+    <a href="index.html" class="back-btn">⬅️ Back to Main Menu</a>
+</div>
+
+<script>
+function convertCurrency() {
+    let usd = document.getElementById('usdInput').value;
+    let rate = 278; 
+    if(usd < 0 || usd === "") {
+        document.getElementById('currencyResult').innerText = "Rs. 0.00 PKR 🇵🇰";
+        return;
+    }
+    let pkr = (usd * rate).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('currencyResult').innerText = "Rs. " + pkr + " PKR 🇵🇰";
+}
+</script>
+
+</body>
+</html>

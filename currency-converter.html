@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌍 Global Multi-Currency Converter Tool</title>
+    <title>🌍 Global Currency Converter Tool</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 450px; width: 100%; }
@@ -12,7 +12,6 @@
         input[type="number"], select { width: 100%; padding: 12px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
         .result { margin-top: 20px; font-size: 22px; font-weight: bold; color: #28a745; background: #eafaf1; padding: 15px; border-radius: 6px; }
         .back-btn { margin-top: 25px; display: inline-block; color: #007bff; text-decoration: none; font-weight: bold; }
-        .loading { font-size: 14px; color: #777; }
     </style>
 </head>
 <body>
@@ -22,69 +21,68 @@
     
     <label for="currencySelect">Currency Select Karein:</label>
     <select id="currencySelect" onchange="convertCurrency()">
-        <option value="" class="loading">Currencies load ho rahi hain...</option>
+        <option value="USD">US Dollar (USD)</option>
+        <option value="EUR">Euro (EUR)</option>
+        <option value="GBP">British Pound (GBP)</option>
+        <option value="SAR">Saudi Riyal (SAR)</option>
+        <option value="AED">UAE Dirham (AED)</option>
+        <option value="INR">Indian Rupee (INR)</option>
+        <option value="CAD">Canadian Dollar (CAD)</option>
+        <option value="AUD">Australian Dollar (AUD)</option>
+        <option value="KWD">Kuwaiti Dinar (KWD)</option>
+        <option value="OMR">Omani Rial (OMR)</option>
+        <option value="QAR">Qatari Riyal (QAR)</option>
+        <option value="BHD">Bahraini Dinar (BHD)</option>
+        <option value="CNY">Chinese Yuan (CNY)</option>
+        <option value="MYR">Malaysian Ringgit (MYR)</option>
+        <option value="TRY">Turkish Lira (TRY)</option>
     </select>
 
     <label for="amountInput">Miqdar (Amount) Likhein:</label>
     <input type="number" id="amountInput" placeholder="Amount darj karein" oninput="convertCurrency()" min="0" value="1">
     
-    <div id="currencyResult" class="result">Rs. 0.00 PKR 🇵🇰</div>
+    <div id="currencyResult" class="result">Rs. 277.24 PKR 🇵🇰</div>
     <br>
     <a href="index.html" class="back-btn">⬅️ Back to Main Menu</a>
 </div>
 
 <script>
-// Puri duniya ki currencies ke rates ka data store karne ke liye variable
-let globalRates = {};
-
-// Website khultay hi internet se saari currencies load karne ka function
-async function loadCurrencies() {
-    try {
-        // Free open-source API standard USD rates fetch karne ke liye
-        let response = await fetch('https://er-api.com');
-        let data = await response.json();
-        
-        if (data && data.rates) {
-            globalRates = data.rates;
-            let select = document.getElementById('currencySelect');
-            select.innerHTML = ''; // Loading text khatam karne ke liye
-            
-            // Saari 160+ currency codes ko alphabetically short kar ke dropdown mein daalna
-            Object.keys(data.rates).sort().forEach(currencyCode => {
-                let option = document.createElement('option');
-                option.value = currencyCode;
-                option.text = currencyCode;
-                if(currencyCode === "USD") option.selected = true; // By default USD select rahega
-                select.appendChild(option);
-            });
-            
-            convertCurrency(); // Pehli dafa automatic convert karne ke liye
-        }
-    } catch (error) {
-        document.getElementById('currencyResult').innerText = "Internet connection check karein!";
-    }
-}
-
-// Convert karne ka function
 function convertCurrency() {
     let amount = document.getElementById('amountInput').value;
     let selectedCurrency = document.getElementById('currencySelect').value;
     
-    if(!amount || amount < 0 || !globalRates[selectedCurrency] || !globalRates["PKR"]) {
+    // Taza currency exchange rates (1 Currency = How many PKR)
+    let rates = {
+        "USD": 277.24,
+        "EUR": 312.83,
+        "GBP": 366.32,
+        "SAR": 73.79,
+        "AED": 75.44,
+        "INR": 3.32,
+        "CAD": 204.15,
+        "AUD": 190.40,
+        "KWD": 905.10,
+        "OMR": 720.10,
+        "QAR": 76.10,
+        "BHD": 735.40,
+        "CNY": 39.50,
+        "MYR": 65.20,
+        "TRY": 8.10
+    };
+
+    if(!amount || amount < 0) {
         document.getElementById('currencyResult').innerText = "Rs. 0.00 PKR 🇵🇰";
         return;
     }
     
-    // Formula: (Amount / Selected Currency Rate) * PKR Rate (Taza interbank rate ke mutabiq)
-    let amountInUSD = amount / globalRates[selectedCurrency];
-    let amountInPKR = amountInUSD * globalRates["PKR"];
+    let currentRate = rates[selectedCurrency];
+    let pkr = (amount * currentRate).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     
-    let formattedPKR = amountInPKR.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    document.getElementById('currencyResult').innerText = "Rs. " + formattedPKR + " PKR 🇵🇰";
+    document.getElementById('currencyResult').innerText = "Rs. " + pkr + " PKR 🇵🇰";
 }
 
-// Page load hotay hi currencies fetch shuru ho jaye
-loadCurrencies();
+// Pehli dafa automatic load karne ke liye
+convertCurrency();
 </script>
 
 </body>

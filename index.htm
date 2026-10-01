@@ -3,42 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Age Calculator Tool</title>
+    <title>Smart Web Tools Portal</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; }
-        h2 { color: #333; margin-bottom: 20px; }
-        input[type="date"] { width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
-        button { background-color: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; }
-        button:hover { background-color: #0056b3; }
-        #result { margin-top: 20px; font-size: 18px; font-weight: bold; color: #28a745; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; max-width: 500px; width: 100%; }
+        h1 { color: #007bff; margin-bottom: 10px; }
+        p { color: #666; margin-bottom: 30px; }
+        .tool-link { display: block; background-color: #f8f9fa; color: #333; text-decoration: none; padding: 18px; margin-bottom: 15px; border-radius: 8px; font-size: 18px; font-weight: bold; border: 1px solid #e1e4e8; transition: all 0.3s ease; }
+        .tool-link:hover { background-color: #007bff; color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,123,255,0.2); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🗓️ Age Calculator</h2>
-    <p>Apni tareekh-e-paisaish (DOB) select karein:</p>
-    <input type="date" id="dob">
-    <button onclick="calculateAge()">Age Calculate Karein</button>
-    <div id="result"></div>
-</div>
-
-<script>
-function calculateAge() {
-    let dobInput = document.getElementById('dob').value;
-    if(!dobInput) {
-        document.getElementById('result').innerText = "Plz date select karein!";
-        return;
-    }
-    let dob = new Date(dobInput);
-    let diff = Date.now() - dob.getTime();
-    let ageDate = new Date(diff); 
-    let years = Math.abs(ageDate.getUTCFullYear() - 1970);
+    <h1>🛠️ Smart Web Tools Portal</h1>
+    <p>Apna pasandida free web tool select karein:</p>
     
-    document.getElementById('result').innerText = "Aap ki umar " + years + " saal hai! 🎉";
-}
-</script>
+    <!-- Link to Age Calculator (We will keep Age Calc inside main or make separate if you want, but for now we link back to same page structures) -->
+    <!-- But since we need all separate, let's just make index a clean menu -->
+    
+    <a href="index.html" onclick="alert('Age Calculator abhi isi page par ya alag file mein save ho sakta hai. Chaliye baqi tools check karein!')" class="tool-link">🗓️ Age Calculator</a>
+    <a href="word-counter.html" class="tool-link">✍️ Word & Character Counter</a>
+    <a href="currency-converter.html" class="tool-link">💵 USD to PKR Converter</a>
+</div>
 
 </body>
 </html>

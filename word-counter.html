@@ -8,6 +8,7 @@
         body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 500px; width: 100%; }
         h2 { color: #007bff; margin-bottom: 20px; }
+        p { color: #555; font-size: 15px; }
         textarea { width: 100%; height: 150px; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; resize: none; }
         .stats { display: flex; justify-content: space-around; margin-top: 20px; font-size: 18px; font-weight: bold; color: #444; }
         .back-btn { margin-top: 20px; display: inline-block; color: #007bff; text-decoration: none; font-weight: bold; }
@@ -17,8 +18,8 @@
 
 <div class="container">
     <h2>✍️ Word & Character Counter</h2>
-    <p>Apna text yahan likhein ya paste karein:</p>
-    <textarea id="textInput" oninput="countWords()" placeholder="Yahan type karna shuru karein..."></textarea>
+    <p>Type or paste your text here:</p>
+    <textarea id="textInput" oninput="countWords()" placeholder="Start typing here..."></textarea>
     
     <div class="stats">
         <div>Words: <span id="wordCount" style="color: #28a745;">0</span></div>

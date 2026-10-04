@@ -12,8 +12,9 @@
         input[type="text"] { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #fe2c55; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
         button { background-color: #fe2c55; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; transition: background 0.2s; }
         button:hover { background-color: #ef1e47; }
-        .result-box { margin-top: 20px; display: none; background: #fafafa; padding: 15px; border-radius: 6px; border: 1px dashed #ccc; }
-        .download-btn { display: inline-block; background-color: #25d366; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-top: 10px; width: 80%; }
+        .result-box { margin-top: 20px; display: none; background: #fafafa; padding: 15px; border-radius: 6px; border: 1px dashed #28a745; }
+        .download-btn { display: inline-block; background-color: #25d366; color: white; text-decoration: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; margin-top: 15px; width: 85%; box-sizing: border-box; }
+        .download-btn:hover { background-color: #1ebd54; }
         .back-btn { margin-top: 25px; display: inline-block; color: #007bff; text-decoration: none; font-weight: bold; }
         .error { color: red; font-size: 14px; margin-top: 10px; display: none; }
     </style>
@@ -30,9 +31,9 @@
     <div id="errorMsg" class="error">Please enter a valid TikTok URL!</div>
 
     <div id="resultBox" class="result-box">
-        <p style="color: #28a745; font-weight: bold;">Video Ready to Download! 🎉</p>
-        <div id="videoPreview"></div>
-        <a href="#" id="finalDownloadLink" target="_blank" class="download-btn" download>📥 Download Video (No Watermark)</a>
+        <p style="color: #28a745; font-weight: bold; margin: 0 0 10px 0;">Video Ready to Download! 🎉</p>
+        <p id="videoTitle" style="font-size: 14px; color: #555; margin-bottom: 15px; font-style: italic;"></p>
+        <a href="#" id="finalDownloadLink" target="_blank" class="download-btn">📥 Download Video (No Watermark)</a>
     </div>
     
     <br>
@@ -46,7 +47,9 @@ async function downloadVideo() {
     let resultBox = document.getElementById('resultBox');
     let btnText = document.getElementById('btnText');
 
-    if(!url || !url.includes('tiktok.com')) {
+    // Input checking
+    if(!url || (!url.includes('tiktok.com') && !url.includes('://tiktok.com'))) {
+        errorMsg.innerText = "Please enter a valid TikTok URL!";
         errorMsg.style.display = 'block';
         resultBox.style.display = 'none';
         return;
@@ -57,20 +60,24 @@ async function downloadVideo() {
     btnText.disabled = true;
 
     try {
-        // Using a fast, free public TikTok API endpoint
-        let res = await fetch(`https://tikwm.com{encodeURIComponent(url)}`);
+        // Using a highly reliable alternative open-source TikTok Scraper API
+        let res = await fetch(`https://eu.org{encodeURIComponent(url)}`);
         let data = await res.json();
 
-        if(data && data.code === 0 && data.data) {
-            let videoLink = data.data.play; // Watermark free link
+        if(data && data.video && data.video.noWatermark) {
+            let videoLink = data.video.noWatermark; // Clean link without watermark
+            let title = data.title || "TikTok Video";
             
+            document.getElementById('videoTitle').innerText = title;
             document.getElementById('finalDownloadLink').href = videoLink;
             resultBox.style.display = 'block';
         } else {
-            alert("Could not fetch video. Please make sure the video is public.");
+            errorMsg.innerText = "Could not fetch video. Make sure the link is correct & video is public.";
+            errorMsg.style.display = 'block';
         }
     } catch (e) {
-        alert("Server temporary busy. Try again in a few seconds.");
+        errorMsg.innerText = "API server slow. Please press Fetch Video button again!";
+        errorMsg.style.display = 'block';
     } finally {
         btnText.innerText = "Fetch Video";
         btnText.disabled = false;

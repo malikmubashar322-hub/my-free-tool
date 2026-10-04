@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Free TikTok Video Downloader (No Watermark)</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 500px; width: 100%; }
+        h2 { color: #fe2c55; margin-bottom: 10px; }
+        p { color: #666; font-size: 15px; margin-bottom: 20px; }
+        input[type="text"] { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #fe2c55; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+        button { background-color: #fe2c55; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; transition: background 0.2s; }
+        button:hover { background-color: #ef1e47; }
+        .result-box { margin-top: 20px; display: none; background: #fafafa; padding: 15px; border-radius: 6px; border: 1px dashed #ccc; }
+        .download-btn { display: inline-block; background-color: #25d366; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-top: 10px; width: 80%; }
+        .back-btn { margin-top: 25px; display: inline-block; color: #007bff; text-decoration: none; font-weight: bold; }
+        .error { color: red; font-size: 14px; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎵 TikTok Video Downloader</h2>
+    <p>Download TikTok videos instantly without any watermark!</p>
+    
+    <input type="text" id="videoUrl" placeholder="Paste TikTok video link here...">
+    <button onclick="downloadVideo()" id="btnText">Fetch Video</button>
+    
+    <div id="errorMsg" class="error">Please enter a valid TikTok URL!</div>
+
+    <div id="resultBox" class="result-box">
+        <p style="color: #28a745; font-weight: bold;">Video Ready to Download! 🎉</p>
+        <div id="videoPreview"></div>
+        <a href="#" id="finalDownloadLink" target="_blank" class="download-btn" download>📥 Download Video (No Watermark)</a>
+    </div>
+    
+    <br>
+    <a href="/" class="back-btn">⬅️ Back to Main Menu</a>
+</div>
+
+<script>
+async function downloadVideo() {
+    let url = document.getElementById('videoUrl').value.trim();
+    let errorMsg = document.getElementById('errorMsg');
+    let resultBox = document.getElementById('resultBox');
+    let btnText = document.getElementById('btnText');
+
+    if(!url || !url.includes('tiktok.com')) {
+        errorMsg.style.display = 'block';
+        resultBox.style.display = 'none';
+        return;
+    }
+    
+    errorMsg.style.display = 'none';
+    btnText.innerText = "Processing... Please Wait";
+    btnText.disabled = true;
+
+    try {
+        // Using a fast, free public TikTok API endpoint
+        let res = await fetch(`https://tikwm.com{encodeURIComponent(url)}`);
+        let data = await res.json();
+
+        if(data && data.code === 0 && data.data) {
+            let videoLink = data.data.play; // Watermark free link
+            
+            document.getElementById('finalDownloadLink').href = videoLink;
+            resultBox.style.display = 'block';
+        } else {
+            alert("Could not fetch video. Please make sure the video is public.");
+        }
+    } catch (e) {
+        alert("Server temporary busy. Try again in a few seconds.");
+    } finally {
+        btnText.innerText = "Fetch Video";
+        btnText.disabled = false;
+    }
+}
+</script>
+
+</body>
+</html>

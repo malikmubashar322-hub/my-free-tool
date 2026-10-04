@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌍 Global Currency Converter Tool</title>
-    <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 450px; width: 100%; }
@@ -13,6 +12,7 @@
         input[type="number"], select { width: 100%; padding: 12px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
         .result { margin-top: 20px; font-size: 22px; font-weight: bold; color: #28a745; background: #eafaf1; padding: 15px; border-radius: 6px; }
         .back-btn { margin-top: 25px; display: inline-block; color: #007bff; text-decoration: none; font-weight: bold; }
+        .update-time { font-size: 11px; color: #777; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -23,7 +23,7 @@
     <label for="currencySelect">Select Currency:</label>
     <select id="currencySelect" onchange="convertCurrency()">
         <option value="USD">US Dollar (USD)</option>
-        <option value="EUR">Euro (EUR)</option>
+        <option value="EUR" selected>Euro (EUR)</option>
         <option value="GBP">British Pound (GBP)</option>
         <option value="SAR">Saudi Riyal (SAR)</option>
         <option value="AED">UAE Dirham (AED)</option>
@@ -33,57 +33,65 @@
         <option value="KWD">Kuwaiti Dinar (KWD)</option>
         <option value="OMR">Omani Rial (OMR)</option>
         <option value="QAR">Qatari Riyal (QAR)</option>
-        <option value="BHD">Bahraini Dinar (BHD)</option>
-        <option value="CNY">Chinese Yuan (CNY)</option>
-        <option value="MYR">Malaysian Ringgit (MYR)</option>
-        <option value="TRY">Turkish Lira (TRY)</option>
     </select>
 
     <label for="amountInput">Enter Amount:</label>
     <input type="number" id="amountInput" placeholder="Enter amount here" oninput="convertCurrency()" min="0" value="1">
     
-    <div id="currencyResult" class="result">Rs. 277.24 PKR 🇵🇰</div>
+    <div id="currencyResult" class="result">Loading Live Rates...</div>
+    <div id="lastUpdate" class="update-time"></div>
     <br>
     <a href="/" class="back-btn">⬅️ Back to Main Menu</a>
 </div>
 
 <script>
+let liveRates = {};
+
+// Fallback static rates in case internet API drops
+const staticRates = { "USD": 277.24, "EUR": 312.83, "GBP": 366.32, "SAR": 73.79, "AED": 75.44, "INR": 3.32, "CAD": 204.15, "AUD": 190.40, "KWD": 905.10, "OMR": 720.10, "QAR": 76.10 };
+
+async function fetchLiveRates() {
+    try {
+        // Fetching directly from a fast, alternative open interbank network
+        let response = await fetch('https://exchangerate-api.com');
+        let data = await response.json();
+        if(data && data.rates) {
+            liveRates = data.rates;
+            document.getElementById('lastUpdate').innerText = "Live Rates Synced Automatically 🔄";
+            convertCurrency();
+        }
+    } catch (e) {
+        document.getElementById('lastUpdate').innerText = "Using Offline Saved Rates";
+        convertCurrency();
+    }
+}
+
 function convertCurrency() {
     let amount = document.getElementById('amountInput').value;
     let selectedCurrency = document.getElementById('currencySelect').value;
     
-    // Taza currency exchange rates (1 Currency = How many PKR)
-    let rates = {
-        "USD": 277.24,
-        "EUR": 312.83,
-        "GBP": 366.32,
-        "SAR": 73.79,
-        "AED": 75.44,
-        "INR": 3.32,
-        "CAD": 204.15,
-        "AUD": 190.40,
-        "KWD": 905.10,
-        "OMR": 720.10,
-        "QAR": 76.10,
-        "BHD": 735.40,
-        "CNY": 39.50,
-        "MYR": 65.20,
-        "TRY": 8.10
-    };
-
     if(!amount || amount < 0) {
         document.getElementById('currencyResult').innerText = "Rs. 0.00 PKR 🇵🇰";
         return;
     }
     
-    let currentRate = rates[selectedCurrency];
-    let pkr = (amount * currentRate).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    let pkrValue = 0;
     
-    document.getElementById('currencyResult').innerText = "Rs. " + pkr + " PKR 🇵🇰";
+    // If live API data is available
+    if(liveRates[selectedCurrency]) {
+        // Formula: Amount / (Currency Rate relative to PKR)
+        pkrValue = amount / liveRates[selectedCurrency];
+    } else {
+        // Use standard static backup rates
+        pkrValue = amount * staticRates[selectedCurrency];
+    }
+    
+    let formattedPKR = pkrValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('currencyResult').innerText = "Rs. " + formattedPKR + " PKR 🇵🇰";
 }
 
-// Initial calculation on page load
-convertCurrency();
+// Run on startup
+fetchLiveRates();
 </script>
 
 </body>

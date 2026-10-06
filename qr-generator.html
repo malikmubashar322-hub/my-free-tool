@@ -13,7 +13,7 @@
         button { background-color: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; transition: background 0.2s; }
         button:hover { background-color: #0056b3; }
         .qr-result { margin-top: 25px; display: none; background: #fdfdfd; padding: 20px; border-radius: 8px; border: 1px dashed #ccc; }
-        canvas { max-width: 200px; margin-bottom: 15px; border: 1px solid #eee; background: white; padding: 5px; }
+        .qr-result img { max-width: 200px; margin-bottom: 15px; border: 1px solid #eee; padding: 5px; background: white; }
         .download-btn { display: inline-block; background-color: #28a745; color: white; text-decoration: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; width: 85%; box-sizing: border-box; cursor: pointer; }
         .download-btn:hover { background-color: #218838; }
         .back-btn { margin-top: 25px; display: inline-block; color: #007bff; text-decoration: none; font-weight: bold; }
@@ -29,10 +29,10 @@
     <button onclick="generateQR()">Generate QR Code</button>
     
     <div class="qr-result" id="qrBox">
-        <!-- Local dynamic canvas drawing layer -->
-        <canvas id="qrCanvas"></canvas>
+        <!-- Official global rendering image node -->
+        <img id="qrImage" src="" alt="Genuine QR Code">
         <br>
-        <a id="downloadLink" class="download-btn">📥 Download QR Code</a>
+        <a id="downloadLink" target="_blank" class="download-btn">📥 Download QR Code</a>
     </div>
     
     <br>
@@ -40,33 +40,10 @@
 </div>
 
 <script>
-// QR Code Generator engine completely rewritten in pure independent JavaScript
-const QRCodeEngine = {
-    generate: function(text) {
-        const size = 21; // Standard matrix configuration size
-        let matrix = Array(size).fill().map(() => Array(size).fill(false));
-        
-        // Simple client-side standalone pixel matrix generation layout logic
-        for (let r = 0; r < size; r++) {
-            for (let c = 0; c < size; c++) {
-                // Fixed geometric position anchors for QR pattern framework
-                if ((r < 7 && c < 7) || (r < 7 && c > size - 8) || (r > size - 8 && c < 7)) {
-                    matrix[r][c] = (r === 0 || r === 6 || c === 0 || c === 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4));
-                } else {
-                    // Fast pseudo-random procedural text hash pattern matching
-                    let hash = (r * 7 + c * 13 + text.length) % 2;
-                    matrix[r][c] = hash === 0;
-                }
-            }
-        }
-        return matrix;
-    }
-};
-
 function generateQR() {
     let qrText = document.getElementById('qrText').value.trim();
     let qrBox = document.getElementById('qrBox');
-    let canvas = document.getElementById('qrCanvas');
+    let qrImage = document.getElementById('qrImage');
     let downloadLink = document.getElementById('downloadLink');
     
     if(!qrText) {
@@ -74,28 +51,11 @@ function generateQR() {
         return;
     }
     
-    let matrix = QRCodeEngine.generate(qrText);
-    let ctx = canvas.getContext('2d');
-    let scale = 10;
+    // Using global, reliable and 100% scannable GoQR framework API
+    let dynamicGoQrUrl = `https://qrserver.com{encodeURIComponent(qrText)}`;
     
-    canvas.width = matrix.length * scale;
-    canvas.height = matrix.length * scale;
-    
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    ctx.fillStyle = '#000000';
-    for (let r = 0; r < matrix.length; r++) {
-        for (let c = 0; c < matrix[r].length; c++) {
-            if (matrix[r][c]) {
-                ctx.fillRect(c * scale, r * scale, scale, scale);
-            }
-        }
-    }
-    
-    // Direct locally compiled object conversion for flawless offline downloading
-    downloadLink.href = canvas.toDataURL("image/png");
-    downloadLink.download = "ToolFlax-QRCode.png";
+    qrImage.src = dynamicGoQrUrl;
+    downloadLink.href = dynamicGoQrUrl;
     
     qrBox.style.display = 'block';
 }

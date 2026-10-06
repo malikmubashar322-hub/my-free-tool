@@ -32,7 +32,6 @@
 
     <div id="resultBox" class="result-box">
         <p style="color: #28a745; font-weight: bold; margin: 0 0 10px 0;">Video Ready to Download! 🎉</p>
-        <p id="videoTitle" style="font-size: 14px; color: #555; margin-bottom: 15px; font-style: italic;"></p>
         <a href="#" id="finalDownloadLink" target="_blank" class="download-btn">📥 Download Video (No Watermark)</a>
     </div>
     
@@ -47,7 +46,6 @@ async function downloadVideo() {
     let resultBox = document.getElementById('resultBox');
     let btnText = document.getElementById('btnText');
 
-    // Input checking
     if(!url || (!url.includes('tiktok.com') && !url.includes('://tiktok.com'))) {
         errorMsg.innerText = "Please enter a valid TikTok URL!";
         errorMsg.style.display = 'block';
@@ -60,23 +58,28 @@ async function downloadVideo() {
     btnText.disabled = true;
 
     try {
-        // Using a highly reliable alternative open-source TikTok Scraper API
-        let res = await fetch(`https://eu.org{encodeURIComponent(url)}`);
+        // High-speed premium tier free global network link
+        let res = await fetch(`https://vanyis.me{encodeURIComponent(url)}`);
         let data = await res.json();
 
-        if(data && data.video && data.video.noWatermark) {
-            let videoLink = data.video.noWatermark; // Clean link without watermark
-            let title = data.title || "TikTok Video";
-            
-            document.getElementById('videoTitle').innerText = title;
+        if(data && data.data && data.data.play) {
+            let videoLink = data.data.play; 
             document.getElementById('finalDownloadLink').href = videoLink;
             resultBox.style.display = 'block';
         } else {
-            errorMsg.innerText = "Could not fetch video. Make sure the link is correct & video is public.";
-            errorMsg.style.display = 'block';
+            // Backup connection attempt if primary cdn struggles
+            let resBackup = await fetch(`https://tikwm.com{encodeURIComponent(url)}`);
+            let dataBackup = await resBackup.json();
+            if(dataBackup && dataBackup.data && dataBackup.data.play) {
+                document.getElementById('finalDownloadLink').href = dataBackup.data.play;
+                resultBox.style.display = 'block';
+            } else {
+                errorMsg.innerText = "Server busy. Please try clicking 'Fetch Video' again!";
+                errorMsg.style.display = 'block';
+            }
         }
     } catch (e) {
-        errorMsg.innerText = "API server slow. Please press Fetch Video button again!";
+        errorMsg.innerText = "Network slow. Please try pressing Fetch Video again!";
         errorMsg.style.display = 'block';
     } finally {
         btnText.innerText = "Fetch Video";

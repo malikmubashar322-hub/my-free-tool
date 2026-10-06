@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Free QR Code Generator Tool - ToolFlax</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 450px; width: 100%; }
+        h2 { color: #007bff; margin-bottom: 10px; }
+        p { color: #666; font-size: 15px; margin-bottom: 20px; }
+        input[type="text"] { width: 100%; padding: 12px; margin-bottom: 20px; border: 2px solid #007bff; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+        button { background-color: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; transition: background 0.2s; }
+        button:hover { background-color: #0056b3; }
+        .qr-result { margin-top: 25px; display: none; background: #fdfdfd; padding: 20px; border-radius: 8px; border: 1px dashed #ccc; }
+        .qr-result img { max-width: 200px; margin-bottom: 15px; }
+        .download-btn { display: inline-block; background-color: #28a745; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; width: 80%; }
+        .download-btn:hover { background-color: #218838; }
+        .back-btn { margin-top: 25px; display: inline-block; color: #007bff; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎯 QR Code Generator</h2>
+    <p>Convert any link, text, or WhatsApp number into a permanent QR Code instantly!</p>
+    
+    <input type="text" id="qrText" placeholder="Paste link or type text here...">
+    <button onclick="generateQR()">Generate QR Code</button>
+    
+    <div class="qr-result" id="qrBox">
+        <img id="qrImage" src="" alt="QR Code">
+        <br>
+        <a href="#" id="downloadLink" onclick="downloadQR()" class="download-btn">📥 Download QR Code</a>
+    </div>
+    
+    <br>
+    <a href="/" class="back-btn">⬅️ Back to Main Menu</a>
+</div>
+
+<script>
+function generateQR() {
+    let qrText = document.getElementById('qrText').value.trim();
+    let qrBox = document.getElementById('qrBox');
+    let qrImage = document.getElementById('qrImage');
+    
+    if(!qrText) {
+        alert("Please enter some text or a website link first!");
+        return;
+    }
+    
+    // Using global static secure open-source QR service
+    let qrUrl = `https://qrserver.com{encodeURIComponent(qrText)}`;
+    
+    qrImage.src = qrUrl;
+    qrBox.style.display = 'block';
+}
+
+async function downloadQR() {
+    let qrImage = document.getElementById('qrImage').src;
+    let downloadLink = document.getElementById('downloadLink');
+    
+    try {
+        let response = await fetch(qrImage);
+        let blob = await response.blob();
+        let fileUrl = URL.createObjectURL(blob);
+        
+        downloadLink.href = fileUrl;
+        downloadLink.download = "ToolFlax-QRCode.png";
+    } catch (e) {
+        // Fallback context if client side caching limits object creation
+        window.open(qrImage, '_blank');
+    }
+}
+</script>
+
+</body>
+</html>

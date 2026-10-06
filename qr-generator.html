@@ -4,18 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>⚡ Free QR Code Generator Tool - ToolFlax</title>
-    <!-- Highly Secured & Fast Offline QR Engine Library -->
-    <script src="https://cloudflare.com"></script>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 450px; width: 100%; }
         h2 { color: #007bff; margin-bottom: 10px; }
         p { color: #666; font-size: 15px; margin-bottom: 20px; }
         input[type="text"] { width: 100%; padding: 12px; margin-bottom: 20px; border: 2px solid #007bff; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
-        button { background-color: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; transition: background 0.2s; }
+        button { background-color: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 6px; pointer: cursor; font-size: 16px; width: 100%; font-weight: bold; transition: background 0.2s; }
         button:hover { background-color: #0056b3; }
         .qr-result { margin-top: 25px; display: none; background: #fdfdfd; padding: 20px; border-radius: 8px; border: 1px dashed #ccc; }
-        #qrcode { display: flex; justify-content: center; margin-bottom: 20px; }
+        .qr-result img { max-width: 200px; margin-bottom: 15px; border: 1px solid #eee; padding: 5px; background: white; }
         .download-btn { display: inline-block; background-color: #28a745; color: white; text-decoration: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; width: 85%; box-sizing: border-box; cursor: pointer; }
         .download-btn:hover { background-color: #218838; }
         .back-btn { margin-top: 25px; display: inline-block; color: #007bff; text-decoration: none; font-weight: bold; }
@@ -31,9 +29,9 @@
     <button onclick="generateQR()">Generate QR Code</button>
     
     <div class="qr-result" id="qrBox">
-        <!-- Main local vector container -->
-        <div id="qrcode"></div>
-        <a id="downloadLink" onclick="downloadQR()" class="download-btn">📥 Download QR Code</a>
+        <img id="qrImage" src="" alt="QR Code">
+        <br>
+        <a id="downloadLink" target="_blank" class="download-btn">📥 Download QR Code</a>
     </div>
     
     <br>
@@ -41,50 +39,26 @@
 </div>
 
 <script>
-let qrContainer = null;
-
 function generateQR() {
     let qrText = document.getElementById('qrText').value.trim();
     let qrBox = document.getElementById('qrBox');
-    let qrcodeDiv = document.getElementById('qrcode');
+    let qrImage = document.getElementById('qrImage');
+    let downloadLink = document.getElementById('downloadLink');
     
     if(!qrText) {
         alert("Please enter some text or a website link first!");
         return;
     }
     
-    // Clear old container graphics safely
-    qrcodeDiv.innerHTML = "";
+    // Using ultra-reliable Google Chart API for instant secure generation
+    let secureGoogleUrl = `https://googleapis.com{encodeURIComponent(qrText)}`;
     
-    // Initializing secure offline processing client-side bundle
-    qrContainer = new QRCode(qrcodeDiv, {
-        text: qrText,
-        width: 200,
-        height: 200,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
-    });
+    qrImage.src = secureGoogleUrl;
+    
+    // Set direct download route for external redirection window
+    downloadLink.href = secureGoogleUrl;
     
     qrBox.style.display = 'block';
-}
-
-function downloadQR() {
-    // Extracting generated graphic target string instantly from client DOM source
-    let imgElement = document.querySelector('#qrcode img');
-    let downloadLink = document.getElementById('downloadLink');
-    
-    if(imgElement) {
-        downloadLink.href = imgElement.src;
-        downloadLink.download = "ToolFlax-QRCode.png";
-    } else {
-        // Safe alternative configuration for ultra dynamic edge cases
-        let canvasElement = document.querySelector('#qrcode canvas');
-        if(canvasElement) {
-            downloadLink.href = canvasElement.toDataURL("image/png");
-            downloadLink.download = "ToolFlax-QRCode.png";
-        }
-    }
 }
 </script>
 

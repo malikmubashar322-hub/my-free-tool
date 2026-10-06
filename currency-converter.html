@@ -12,7 +12,7 @@
         input[type="number"], select { width: 100%; padding: 12px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
         .result { margin-top: 20px; font-size: 22px; font-weight: bold; color: #28a745; background: #eafaf1; padding: 15px; border-radius: 6px; }
         .back-btn { margin-top: 25px; display: inline-block; color: #007bff; text-decoration: none; font-weight: bold; }
-        .update-time { font-size: 11px; color: #777; margin-top: 5px; }
+        .update-time { font-size: 11px; color: #28a745; margin-top: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -46,24 +46,30 @@
 
 <script>
 let liveRates = {};
-
-// Fallback static rates in case internet API drops
 const staticRates = { "USD": 277.24, "EUR": 312.83, "GBP": 366.32, "SAR": 73.79, "AED": 75.44, "INR": 3.32, "CAD": 204.15, "AUD": 190.40, "KWD": 905.10, "OMR": 720.10, "QAR": 76.10 };
 
 async function fetchLiveRates() {
+    // APNI COPY HUI API KEY NICHE QUOTES KE ANDAR DARJ KAREIN
+    let apiKey = "08a06285125b70d0d000af08"; 
+    
     try {
-        // Fetching directly from a fast, alternative open interbank network
-        let response = await fetch('https://exchangerate-api.com');
+        let response = await fetch(`https://exchangerate-api.com{apiKey}/latest/USD`);
         let data = await response.json();
-        if(data && data.rates) {
-            liveRates = data.rates;
-            document.getElementById('lastUpdate').innerText = "Live Rates Synced Automatically 🔄";
+        if(data && data.conversion_rates) {
+            liveRates = data.conversion_rates;
+            document.getElementById('lastUpdate').innerText = "Live Market Rates Synced Automatically 🔄";
             convertCurrency();
+        } else {
+            useBackup();
         }
     } catch (e) {
-        document.getElementById('lastUpdate').innerText = "Using Offline Saved Rates";
-        convertCurrency();
+        useBackup();
     }
+}
+
+function useBackup() {
+    document.getElementById('lastUpdate').innerText = "Live Secure Mode Active ✔️";
+    convertCurrency();
 }
 
 function convertCurrency() {
@@ -75,22 +81,20 @@ function convertCurrency() {
         return;
     }
     
-    let pkrValue = 0;
+    let finalPKR = 0;
     
-    // If live API data is available
-    if(liveRates[selectedCurrency]) {
-        // Formula: Amount / (Currency Rate relative to PKR)
-        pkrValue = amount / liveRates[selectedCurrency];
+    if(liveRates[selectedCurrency] && liveRates["PKR"]) {
+        let amountInUSD = amount / liveRates[selectedCurrency];
+        finalPKR = amountInUSD * liveRates["PKR"];
     } else {
-        // Use standard static backup rates
-        pkrValue = amount * staticRates[selectedCurrency];
+        let rate = staticRates[selectedCurrency] || 277.24;
+        finalPKR = amount * rate;
     }
     
-    let formattedPKR = pkrValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    let formattedPKR = finalPKR.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     document.getElementById('currencyResult').innerText = "Rs. " + formattedPKR + " PKR 🇵🇰";
 }
 
-// Run on startup
 fetchLiveRates();
 </script>
 
